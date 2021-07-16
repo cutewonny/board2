@@ -72,4 +72,32 @@ public class boardController {
 
 	}
 	
+	// 게시물 목록 service.list(); + 페이징 추가
+	@RequestMapping(value="/listPage", method=RequestMethod.GET)
+	public void getListPage(Model model, @RequestParam("num") int num) throws Exception{
+		// 매개변수 num: 페이지 목록 번호
+		// 게시물 총 개수
+		int count = service.count();
+		
+		// 한 페이지에 출력할 게시물 개수
+		int postNum = 10;// 고정 값
+		
+		// 하단 페이지 번호를 나열 (게시물 총 개수 /한페이지 출력 개수)의 올림
+		int pageNum = (int)Math.ceil((double)count/postNum);
+		
+		/*
+		 * 출력할 게시물 번호
+		 * 1페이지 -> limit 0, 10 
+		 * 2페이지 -> limit 10, 10
+		 * 3페이지 -> limit 20, 10
+		 */
+		int displayPost = (num-1)*postNum;
+
+
+		List<BoardVO> list = null;
+		list = service.pageList(displayPost, postNum);// 게시물 목록 데이터
+		model.addAttribute("list", list); 
+		model.addAttribute("pageNum", pageNum);// 하단 페이지 수 나열
+	}
+	
 }
