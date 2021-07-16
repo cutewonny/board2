@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.board.domain.BoardVO;
 import com.board.service.BoardService;
@@ -19,6 +20,7 @@ public class boardController {
 	@Inject
 	BoardService service;
 
+	// 게시물 목록
 	@RequestMapping(value="/list", method=RequestMethod.GET)
 	public void getList(Model model) throws Exception{
 		List<BoardVO> list = null;
@@ -39,4 +41,27 @@ public class boardController {
 		service.write(vo);
 		return "redirect:/board/list";
 	}
+	
+	// 게시물 조회
+	@RequestMapping(value="/view", method=RequestMethod.GET)
+	public void getView(@RequestParam("bno") int bno, Model model) throws Exception{
+		BoardVO vo = service.view(bno);
+		model.addAttribute("view",vo);
+	}
+	
+	// 게시물 수정 get으로 호출시 데이터 불러옴
+	@RequestMapping(value="/modify", method=RequestMethod.GET)
+	public void getModify(@RequestParam("bno") int bno, Model model) throws Exception{
+		BoardVO vo = service.view(bno);
+		model.addAttribute("view", vo);
+		
+	}
+	
+	// 게시물 수정 post으로 호출시 데이터 update
+	@RequestMapping(value="/modify", method=RequestMethod.POST)
+	public String postModify(BoardVO vo) throws Exception{
+		service.modify(vo);
+		return "redirect:/board/view?bno="+vo.getBno();
+	}
+	
 }

@@ -20,6 +20,8 @@
 		<button type="submit">작성</button>
 	
 	</form>
+	
+	<p><a href="/board/list">게시물 목록</a></p>
 
 </body>
 </html>
