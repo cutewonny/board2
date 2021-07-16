@@ -16,7 +16,7 @@
 	<!-- DataSource는 MySQL과 연결을 담당 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/board?serverTimezone=UTC"></property>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/board?serverTimezone=UTC&amp;useSSL=false"></property>
         <property name="username" value="wonny"></property>
         <property name="password" value="vegas"></property>
     </bean>

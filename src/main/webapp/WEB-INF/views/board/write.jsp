@@ -7,6 +7,9 @@
 <title>게시물 작성</title>
 </head>
 <body>
+
+<div id="nav"><%@ include file="../include/nav.jsp" %></div>
+
 	<form method="post">
 		<label>제목</label>
 		<input type="text" name="title" /><br>
@@ -20,8 +23,6 @@
 		<button type="submit">작성</button>
 	
 	</form>
-	
-	<p><a href="/board/list">게시물 목록</a></p>
 
 </body>
 </html>
