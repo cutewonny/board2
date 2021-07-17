@@ -76,28 +76,82 @@ public class boardController {
 	@RequestMapping(value="/listPage", method=RequestMethod.GET)
 	public void getListPage(Model model, @RequestParam("num") int num) throws Exception{
 		// 매개변수 num: 페이지 목록 번호
-		// 게시물 총 개수
+		
+		// <게시물> 총 개수
 		int count = service.count();
 		
-		// 한 페이지에 출력할 게시물 개수
-		int postNum = 10;// 고정 값
-		
-		// 하단 페이지 번호를 나열 (게시물 총 개수 /한페이지 출력 개수)의 올림
-		int pageNum = (int)Math.ceil((double)count/postNum);
+		// <게시물> 한 페이지에 출력할 게시물 개수
+		int postNum_defalut = 10;//고정 값
 		
 		/*
-		 * 출력할 게시물 번호
-		 * 1페이지 -> limit 0, 10 
-		 * 2페이지 -> limit 10, 10
-		 * 3페이지 -> limit 20, 10
+		 * <페이징 + DB> pageNum: 하단 페이지 총 번호 (게시물 총 개수 / 한 페이지 출력 할 개수)의 올림
+		 * count=611개의 게시물이 있다면 -> pageNum: 62장
 		 */
-		int displayPost = (num-1)*postNum;
-
-
+		int pageNum = (int)Math.ceil((double)count/postNum_defalut);//62장
+		
+		/*
+		 * <게시물> displayPost: 출력할 게시물
+		 * num: 현재 1페이지 -> limit 0, 10 
+		 * num: 현재 2페이지 -> limit 10, 10
+		 * num: 현재 3페이지 -> limit 20, 10
+		 */
+		int displayPost = (num-1)*postNum_defalut;
+		
+		// <페이징> 한번에 표시할 페이징 번호의 개수
+		int pageNum_defalut = 10;//고정 값
+		
+		/*
+		 * <페이징> endPageNum : 표시되는 페이지 번호 중 마지막 번호 : 10단위로 끝난다.
+		 *  num: 현재 1페이지 -> (1)*10 => 마지막번호 10
+		 *  num: 현재 2페이지 -> (1)*10 => 마지막번호 10
+		 *  num: 현재 10페이지 -> (1)*10 => 마지막번호 10
+		 *  num: 현재 11페이지 -> (2)*10 => 마지막번호 20
+		 *  num: 현재 19페이지 -> (2)*10 => 마지막번호 20
+		 */
+		int endPageNum = (int)(Math.ceil((double)num/(double)pageNum_defalut)*pageNum_defalut);
+		
+		/*
+		 * <페이징> startPageNum: 표시되는 페이지 번호 중 첫번째 번호
+		 * 마지막번호 10 -> 10-(9) => 1 페이지 시작
+		 * 마지막 번호 20 -> 20-(9) => 11 페이지 시작
+		 * 마지막 번호 30 -> 30-(9) => 21 페이지 시작
+		 */
+		int startPageNum = endPageNum - (pageNum_defalut-1);
+		
+		/*
+		 * <페이징> 마지막 번호 재계산
+		 *   count=611개의 게시물이 있다면 -> pageNum: 62장
+		 *   위에서 endPageNum: 62장을 눌렀는데 70장까지 표시됨 -> 63~70장은 필요없음
+		 *   70 > 62
+		 */
+		if(endPageNum>pageNum) {
+			endPageNum=pageNum;
+		}
+		
+		/*
+		 * <페이징 이동> 1페이지:이전 못눌러
+		 */
+		boolean prev = startPageNum == 1 ? false:true;
+		
+		/*
+		 * <페이징 이동> 마지막 페이지: 다음 못눌러
+		 * 현재 페이지 num: 62장일때 >= pageNum: 62장 -> 다음 없어
+		 */
+		boolean next = num>=pageNum ? false:true;
+		
 		List<BoardVO> list = null;
-		list = service.pageList(displayPost, postNum);// 게시물 목록 데이터
+		list = service.pageList(displayPost, postNum_defalut);// 게시물 목록 데이터
+		
+		
 		model.addAttribute("list", list); 
 		model.addAttribute("pageNum", pageNum);// 하단 페이지 수 나열
+		
+		model.addAttribute("startPageNum", startPageNum);
+		model.addAttribute("endPageNum", endPageNum);
+		
+		// 페이징 이동
+		model.addAttribute("prev", prev);
+		model.addAttribute("next", next);
 	}
 	
 }
