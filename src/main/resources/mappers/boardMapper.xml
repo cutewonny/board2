@@ -34,7 +34,8 @@
 		set
 		title = #{title},
 		content = #{content},
-		writer = #{writer}
+		writer = #{writer},
+		modiDate = now()
 		where
 		bno = #{bno}
 	</update>
