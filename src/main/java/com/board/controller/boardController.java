@@ -194,7 +194,9 @@ public class boardController {
 		page.setCount(service.searchCount(searchType, keyword));// <게시물> 총 개수 // 다른 변수 설정 함수 실행
 		
 		//검색 타입과 검색어
-		page.setSearchTypeKeyword(searchType, keyword);
+		//page.setSearchTypeKeyword(searchType, keyword);//searchType,keyword를 set 하는 함수
+		page.setSearchType(searchType);
+		page.setKeyword(keyword);
 		
 		List<BoardVO> list = null;
 		list = service.pageListSearch(page.getDisplayPost(), page.getPostNum_defalut(), searchType, keyword);// 게시물 목록 데이터
@@ -205,8 +207,8 @@ public class boardController {
 		model.addAttribute("page", page);
 		model.addAttribute("select", num);//현재 페이지
 		
-		model.addAttribute("searchType", searchType);
-		model.addAttribute("keyword", keyword);
+		//model.addAttribute("searchType", searchType);
+		//model.addAttribute("keyword", keyword);
 		
 	}
 	
