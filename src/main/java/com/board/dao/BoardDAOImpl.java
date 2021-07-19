@@ -47,11 +47,22 @@ public class BoardDAOImpl implements BoardDAO {
 		sql.delete(namespace+".delete", bno);
 	}
 
+	//게시물 총 갯수 구현
 	@Override
 	public int count() throws Exception {
 		return sql.selectOne(namespace+".count");
 	}
 
+	//게시물 총 갯수 + 키워드 구현
+	@Override
+	public int searchCount(String searchType, String keyword) throws Exception {
+		HashMap data = new HashMap();
+		data.put("searchType", searchType);
+		data.put("keyword", keyword);
+		return sql.selectOne(namespace+".searchCount", data);
+	}
+	
+	//게시물 목록 + 페이징
 	@Override
 	public List listPage(int displayPost, int postNum) throws Exception {
 		HashMap data = new HashMap();
@@ -59,5 +70,18 @@ public class BoardDAOImpl implements BoardDAO {
 		data.put("postNum", postNum);
 		return sql.selectList(namespace+".listPage", data);
 	}
+
+	//게시물 목록 + 페이징 + 검색
+	@Override
+	public List listPageSearch(int displayPost, int postNum, String searchType, String keyword) throws Exception {
+		HashMap data = new HashMap();
+		data.put("displayPost", displayPost);
+		data.put("postNum", postNum);
+		data.put("searchType", searchType);
+		data.put("keyword", keyword);
+		return sql.selectList(namespace+".listPageSearch", data);
+	}
+
+
 
 }

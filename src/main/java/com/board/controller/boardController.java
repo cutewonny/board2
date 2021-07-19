@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.board.domain.BoardVO;
+import com.board.domain.Page;
 import com.board.service.BoardService;
 
 @Controller
@@ -77,6 +78,34 @@ public class boardController {
 	public void getListPage(Model model, @RequestParam("num") int num) throws Exception{
 		// 매개변수 num: 페이지 목록 번호
 		
+		Page page = new Page();
+		
+		page.setNum(num);
+		page.setCount(service.count());// <게시물> 총 개수
+		
+		List<BoardVO> list = null;
+		list = service.pageList(page.getDisplayPost(), page.getPostNum_defalut());// 게시물 목록 데이터
+		
+		
+		model.addAttribute("list", list); // 게시물 목록 데이터
+		
+		/*
+		model.addAttribute("pageNum", page.getPageNum());// 하단 페이지 수 나열
+		model.addAttribute("startPageNum", page.getStartPageNum());// 선택한 페이지의 처음 장
+		model.addAttribute("endPageNum", page.getEndPageNum());// 선택한 페이지의 마지막 장
+		// 페이징 이동
+		model.addAttribute("prev", page.isPrev());
+		model.addAttribute("next", page.isNext());
+		*/
+		model.addAttribute("page", page);
+		model.addAttribute("select", num);//현재 페이지
+		
+	}
+	
+	@RequestMapping(value="/listPage2", method=RequestMethod.GET)
+	public void getListPage2(Model model, @RequestParam("num") int num) throws Exception{
+		// 매개변수 num: 페이지 목록 번호
+
 		// <게시물> 총 개수
 		int count = service.count();
 		
@@ -139,19 +168,46 @@ public class boardController {
 		 */
 		boolean next = num>=pageNum ? false:true;
 		
+		
 		List<BoardVO> list = null;
 		list = service.pageList(displayPost, postNum_defalut);// 게시물 목록 데이터
 		
 		
-		model.addAttribute("list", list); 
+		model.addAttribute("list", list); // 게시물 목록 데이터
+		
 		model.addAttribute("pageNum", pageNum);// 하단 페이지 수 나열
-		
-		model.addAttribute("startPageNum", startPageNum);
-		model.addAttribute("endPageNum", endPageNum);
-		
+		model.addAttribute("startPageNum", startPageNum);// 선택한 페이지의 처음 장
+		model.addAttribute("endPageNum", endPageNum);// 선택한 페이지의 마지막 장
 		// 페이징 이동
 		model.addAttribute("prev", prev);
 		model.addAttribute("next", next);
+		model.addAttribute("select", num);//현재 페이지
+		
+	}
+	
+	// 게시물 목록 service.list(); + 페이징 추가
+	@RequestMapping(value="/listPageSearch", method=RequestMethod.GET)
+	public void getListPageSearch(Model model, @RequestParam("num") int num, @RequestParam(value="searchType", required=false, defaultValue="title")String searchType, @RequestParam(value="keyword", required=false, defaultValue="")String keyword) throws Exception{
+		Page page = new Page();
+		
+		page.setNum(num);
+		page.setCount(service.searchCount(searchType, keyword));// <게시물> 총 개수 // 다른 변수 설정 함수 실행
+		
+		//검색 타입과 검색어
+		page.setSearchTypeKeyword(searchType, keyword);
+		
+		List<BoardVO> list = null;
+		list = service.pageListSearch(page.getDisplayPost(), page.getPostNum_defalut(), searchType, keyword);// 게시물 목록 데이터
+		
+		
+		model.addAttribute("list", list); // 게시물 목록 데이터
+		
+		model.addAttribute("page", page);
+		model.addAttribute("select", num);//현재 페이지
+		
+		model.addAttribute("searchType", searchType);
+		model.addAttribute("keyword", keyword);
+		
 	}
 	
 }

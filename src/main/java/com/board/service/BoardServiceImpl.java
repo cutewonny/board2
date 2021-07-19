@@ -44,14 +44,28 @@ public class BoardServiceImpl implements BoardService {
 		dao.delete(bno);
 	}
 
+	// 게시물 총 개수
 	@Override
 	public int count() throws Exception {
 		return dao.count();
+	}
+	
+	// 게시물 총 개수 + 검색
+	@Override
+	public int searchCount(String searchType, String keyword) throws Exception {
+		return dao.searchCount(searchType, keyword);
 	}
 
 	@Override
 	public List pageList(int displayPost, int postNum) throws Exception {
 		return dao.listPage(displayPost, postNum);
 	}
+
+	@Override
+	public List pageListSearch(int displayPost, int postNum, String searchType, String keyword) throws Exception {
+		return dao.listPageSearch(displayPost, postNum, searchType, keyword);
+	}
+
+
 
 }
