@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import com.board.service.BoardService;
 @Controller
 @RequestMapping("/board/")
 public class boardController {
+	private static final Logger logger = LoggerFactory.getLogger(boardController.class);
 	
 	@Inject
 	BoardService service;
@@ -28,6 +31,8 @@ public class boardController {
 		list = service.list();
 		
 		model.addAttribute("list",list);
+		logger.info("wonny1: "+list.get(0).toString());
+		logger.debug("wonny2: "+list.get(0).toString());
 	}
 	
 	// 게시물 작성 GET
